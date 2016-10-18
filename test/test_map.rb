@@ -28,4 +28,12 @@ class TestMap < MiniTest::Unit::TestCase
     map = Vindinium::Client::Map.parse @map_string, @size
     assert_equal 18, map.size
   end
+
+  def test_that_it_accesses_the_map
+    map = Vindinium::Client::Map.parse @map_string, @size
+
+    assert_equal :impassable, map[0,0].type
+    assert_equal :mine, map[3,7].type
+    assert_equal :hero, map[12,6].type
+  end
 end

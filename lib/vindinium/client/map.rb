@@ -30,7 +30,7 @@ class Vindinium::Client::Map
   #
   #   map[0,0]   # => The first tile
   def [](row, col)
-    @tiles[@size * row + col]
+    @tiles[size * row + col]
   end
 
   ##
