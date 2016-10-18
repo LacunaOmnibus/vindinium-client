@@ -33,6 +33,14 @@ class Vindinium::Client::Map
     @tiles[size * row + col]
   end
 
+  def neighbors(tile)
+    index = @tiles.index tile
+    { north: (index-size < 0 ? nil : @tiles[index-size]),
+      south: @tiles[index+size],
+      east: (index + 1 % size == 0 ? nil : @tiles[index+1]),
+      west: (index-1 < 0 || index - 1 % size == size - 1 ? nil : @tiles[index-1]) }
+  end
+
   ##
   # Parses the string representation of the map and returns a new Map object
   # from it.
