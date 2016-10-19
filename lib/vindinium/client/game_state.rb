@@ -50,6 +50,6 @@ class Vindinium::Client::GameState
   ##
   # Updates the game's internal state from its current JSON representation.
   def update!
-    #@map.from_s @data['game']['board']['tiles']
+    @map.from_s @data['game']['board']['tiles']
   end
 end

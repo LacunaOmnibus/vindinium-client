@@ -15,7 +15,7 @@ class GameStateTest < MiniTest::Unit::TestCase
     stub_move = stub_request(
         :post, "http://localhost:9000/api/s2xh3aig/lte0/play")
       .with(body: "{\"key\":\"key\",\"direction\":\"North\"}")
-      .to_return(status: 200, body: "{}")
+      .to_return(status: 200, body: @finished_game_state.to_json)
 
     state = Vindinium::Client::GameState.new('key', @finished_game_state)
     state.move! :north

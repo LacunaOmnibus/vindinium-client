@@ -42,18 +42,24 @@ class Vindinium::Client::Map
   end
 
   ##
+  # Parses a Map's string representation into actual tiles.
+  def from_s(string)
+    @tiles.clear
+    0.upto(string.length/2 - 1) do |i|
+      @tiles << Vindinium::Client::Tile.parse(string[2*i..2*i+1])
+    end
+  end
+
+  ##
   # Parses the string representation of the map and returns a new Map object
   # from it.
   #
   # The +string+ parameter contains the actual map string, +size+ the number
   # of horizontal and vertical tiles. Vindinium maps are always square.
-  def self.parse(string, size)
-    map = []
+  def self.parse(string)
+    map = Vindinium::Client::Map.new
+    map.from_s string
 
-    (0..2*size**2-1).step(2) do |i|
-      map << Vindinium::Client::Tile.parse(string[i..i+1])
-    end
-
-    Vindinium::Client::Map.new map: map
+    map
   end
 end

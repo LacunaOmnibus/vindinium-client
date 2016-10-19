@@ -2,7 +2,6 @@ require 'minitest/autorun'
 
 class TestMap < MiniTest::Unit::TestCase
   def setup
-    @size = 18
     @map_string = \
       '##############        ##############' \
       '##############        ##############' \
@@ -25,12 +24,12 @@ class TestMap < MiniTest::Unit::TestCase
   end
 
   def test_that_it_parses
-    map = Vindinium::Client::Map.parse @map_string, @size
+    map = Vindinium::Client::Map.parse @map_string
     assert_equal 18, map.size
   end
 
   def test_that_it_accesses_the_map
-    map = Vindinium::Client::Map.parse @map_string, @size
+    map = Vindinium::Client::Map.parse @map_string
 
     assert_equal :impassable, map[0,0].type
     assert_equal :mine, map[3,7].type
@@ -38,7 +37,7 @@ class TestMap < MiniTest::Unit::TestCase
   end
 
   def test_that_it_retrieves_neighbors
-    map = Vindinium::Client::Map.parse @map_string, @size
+    map = Vindinium::Client::Map.parse @map_string
     tile = map[4,7]
     neighbors = map.neighbors tile
 
@@ -49,7 +48,7 @@ class TestMap < MiniTest::Unit::TestCase
   end
 
   def test_that_it_retrieves_neighbors_on_borders
-    map = Vindinium::Client::Map.parse @map_string, @size
+    map = Vindinium::Client::Map.parse @map_string
 
     neighbors = map.neighbors map[0,7]
     assert_equal nil, neighbors[:north]
