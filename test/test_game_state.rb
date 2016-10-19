@@ -10,4 +10,16 @@ class GameStateTest < MiniTest::Unit::TestCase
     state = Vindinium::Client::GameState.new('key', @finished_game_state)
     assert !state.running?
   end
+
+  def test_that_it_sends_the_move_action
+    stub_move = stub_request(
+        :post, "http://localhost:9000/api/s2xh3aig/lte0/play")
+      .with(body: "{\"key\":\"key\",\"direction\":\"North\"}")
+      .to_return(status: 200, body: "{}")
+
+    state = Vindinium::Client::GameState.new('key', @finished_game_state)
+    state.move! :north
+
+    assert_requested(stub_move)
+  end
 end
