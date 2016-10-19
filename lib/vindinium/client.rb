@@ -66,6 +66,7 @@ module Vindinium # :nodoc:
 end
 
 require 'vindinium/client/map'
+require 'vindinium/client/hero'
 require 'vindinium/client/tile'
 require 'vindinium/client/hero_tile'
 require 'vindinium/client/mine_tile'

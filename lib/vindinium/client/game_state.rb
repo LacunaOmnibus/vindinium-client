@@ -5,11 +5,20 @@ require 'net/http'
 class Vindinium::Client::GameState
 
   ##
+  # The game board
+  attr_reader :map
+
+  ##
+  # Short-cut access to all heroes on the map
+  attr_reader :heroes
+
+  ##
   # Creates a new GameState object and initializes it from the current json.
   def initialize(key, initial_json)
     @key = key
     @data = initial_json
     @map = Vindinium::Client::Map.new
+    @heroes = []
 
     update!
   end
@@ -51,5 +60,12 @@ class Vindinium::Client::GameState
   # Updates the game's internal state from its current JSON representation.
   def update!
     @map.from_s @data['game']['board']['tiles']
+
+    # Update the heroes:
+    @data['game']['heroes'].each do |h|
+      hero = Vindinium::Client::Hero.new h
+      @heroes << hero
+      @map[h['pos']['x'], h['pos']['y']].hero = hero
+    end
   end
 end

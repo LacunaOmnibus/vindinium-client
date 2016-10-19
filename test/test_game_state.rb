@@ -7,7 +7,7 @@ class GameStateTest < MiniTest::Unit::TestCase
   end
 
   def test_that_it_checks_running
-    state = Vindinium::Client::GameState.new('key', @finished_game_state)
+    state = Vindinium::Client::GameState.new 'key', @finished_game_state
     assert !state.running?
   end
 
@@ -21,5 +21,11 @@ class GameStateTest < MiniTest::Unit::TestCase
     state.move! :north
 
     assert_requested(stub_move)
+  end
+
+  def test_that_it_places_heroes
+    state = Vindinium::Client::GameState.new 'key', @finished_game_state
+    assert_equal 4, state.heroes.length
+    assert state.heroes.include? state.map[4,8].hero
   end
 end
