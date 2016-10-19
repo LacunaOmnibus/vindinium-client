@@ -31,11 +31,11 @@ module Vindinium # :nodoc:
       params = { turns: turns }
       params[:map] = map if map
 
-      api_call BASE_URI_TRAINING, params
+      GameState.new @key, api_call(BASE_URI_TRAINING, params)
     end
 
     def start_arena_match
-      api_call BASE_URI_ARENA
+      GameState.new @key, api_call(BASE_URI_ARENA)
     end
 
     ##
@@ -52,6 +52,9 @@ module Vindinium # :nodoc:
                             use_ssl: uri.scheme == 'https') do |http|
         http.request(req)
       end
+
+      raise res.body if res.code.to_i >= 400
+      JSON.parse res.body
     end
   end
 end
@@ -60,3 +63,4 @@ require 'vindinium/client/map'
 require 'vindinium/client/tile'
 require 'vindinium/client/hero_tile'
 require 'vindinium/client/mine_tile'
+require 'vindinium/client/game_state'
