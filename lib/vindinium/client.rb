@@ -31,11 +31,17 @@ module Vindinium # :nodoc:
       params = { turns: turns }
       params[:map] = map if map
 
-      GameState.new @key, api_call(BASE_URI_TRAINING, params)
+      game_state = GameState.new @key, api_call(BASE_URI_TRAINING, params)
+      yield game_state while game_state.running? if block_given?
+
+      game_state
     end
 
     def start_arena_match
-      GameState.new @key, api_call(BASE_URI_ARENA)
+      game_state = GameState.new @key, api_call(BASE_URI_ARENA)
+      yield game_state while game_state.running? if block_given?
+
+      game_state
     end
 
     ##

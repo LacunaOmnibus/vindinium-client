@@ -12,6 +12,12 @@ class Vindinium::Client::GameState
   end
 
   ##
+  # Returns +true+ for as long as moves can be made.
+  def running?
+    !@data['game']['finished']
+  end
+
+  ##
   # Commits the next move and sends it to the server. The +direction+
   # parameter must be one of +:north+, +:east+, +:sourth+, or +:west+.
   #
