@@ -20,14 +20,18 @@ module Vindinium # :nodoc:
     #
     #   Client.new(my_key).start_training do |game_state|
     #     # Some thinking...
-    #     game_state.turn :north
+    #     game_state.turn! :north
     #   end
     #
     # There are two optional parameters: +turns+ and +map+. If +turns+ is
     # unset, 300 turns are assumed. The +map+ parameter takes one of +:m1+,
     # +:m2+, +:m3+, +:m4+, +:m5+, +:m6+. If no parameter is supplied, a random
     # map is generated.
-    def start_training(turns: 300, map: nil)
+    #
+    # You *must* use GameState#turn!, or otherwise your bot will not send an
+    # answer and will be makred as +crashed+ after 1 second, after which your
+    # game is essentially over.
+    def start_training(turns: 300, map: nil) # :yields: game_state
       params = { turns: turns }
       params[:map] = map if map
 
@@ -37,7 +41,22 @@ module Vindinium # :nodoc:
       game_state
     end
 
-    def start_arena_match
+    ##
+    # Starts an arena match against other bots.
+    #
+    #   Client.new(my_key).start_training do |game_state|
+    #     # Some thinking...
+    #     game_state.turn! :north
+    #   end
+    #
+    # It might take some time until the initial API call returns. This happens
+    # when not enough bots are only to play a match. Just be patient, then;
+    # Vindinium::Client certainly is.
+    #
+    # You *must* use GameState#turn!, or otherwise your bot will not send an
+    # answer and will be makred as +crashed+ after 1 second, after which your
+    # game is essentially over.
+    def start_arena_match # :yields: game_state
       game_state = GameState.new @key, api_call(BASE_URI_ARENA)
       yield game_state while game_state.running? if block_given?
 
