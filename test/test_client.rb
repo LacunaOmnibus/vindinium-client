@@ -3,12 +3,31 @@ require 'webmock/minitest'
 
 class ClientTest < MiniTest::Unit::TestCase
   def setup
+    @faux_game_state = JSON.parse File.read(
+      File.expand_path(__FILE__ + '/../webmock/game_state.json'))
+    @faux_game_state['game']['finished'] = false
+    @finished_game_state = JSON.parse File.read(
+      File.expand_path(__FILE__ + '/../webmock/game_state.json'))
     stub_request(:post, 'http://vindinium.org/api/training')
       .with(body: "{\"key\":\"my_key\"}")
-      .to_return({ status: 200,
-                   body: File.new(
-                     File.expand_path __FILE__ + '/../webmock/game_state.json'),
-                   headers: {}})
+      .to_return( status: 200, body: @faux_game_state.to_json)
+    stub_request(:post, 'http://vindinium.org/api/training')
+      .with(body: "{\"turns\":300,\"key\":\"my_key\"}")
+      .to_return( status: 200, body: @faux_game_state.to_json)
+  end
+
+  def test_that_it_loops
+    stub_move = stub_request(
+        :post, "http://localhost:9000/api/s2xh3aig/lte0/play")
+      .with(body: "{\"key\":\"my_key\",\"direction\":\"North\"}")
+      .to_return(status: 200, body: @finished_game_state.to_json)
+
+    turns = 0
+    client = Vindinium::Client.new('my_key').start_training do |game_state|
+      assert turns == 0 && game_state.running? || turns > 0 && !game_state.running?
+      game_state.move! :north
+      turns += 1
+    end
   end
 
   def test_that_it_does_an_api_call
