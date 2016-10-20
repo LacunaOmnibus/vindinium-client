@@ -28,4 +28,12 @@ class GameStateTest < MiniTest::Unit::TestCase
     assert_equal 4, state.heroes.length
     assert state.heroes.include? state.map[4,8].hero
   end
+
+  def test_that_it_finds_us
+    state = Vindinium::Client::GameState.new 'key', @finished_game_state
+    hero = state.whoami
+
+    assert hero.is_a? Vindinium::Client::Hero
+    assert_equal 4, hero.id
+  end
 end

@@ -30,6 +30,24 @@ class Vindinium::Client::GameState
   end
 
   ##
+  # Current game turn number
+  def turn
+    @data['turn'].to_i
+  end
+
+  ##
+  # Maximum number of turns the game runs
+  def max_turns
+    @data['maxTurns'].to_i
+  end
+
+  ##
+  # Returns the hero object that represents us.
+  def whoami
+    @heroes.find { |h| h.id == @data['hero']['id'] }
+  end
+
+  ##
   # Commits the next move and sends it to the server. The +direction+
   # parameter must be one of +:north+, +:east+, +:sourth+, or +:west+.
   #
@@ -62,6 +80,8 @@ class Vindinium::Client::GameState
     @map.from_s @data['game']['board']['tiles']
 
     # Update the heroes:
+
+    @heroes.clear
     @data['game']['heroes'].each do |h|
       hero = Vindinium::Client::Hero.new h
       @heroes << hero
