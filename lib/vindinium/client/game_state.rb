@@ -57,6 +57,8 @@ class Vindinium::Client::GameState
       raise "Unknown direction: #{direction}"
     end
 
+    raise "Cannot move: We've crashed!" if @data['hero']['crashed']
+
     direction = direction.to_s.capitalize
     uri = URI(@data['playUrl'])
 

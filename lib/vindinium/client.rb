@@ -82,6 +82,12 @@ module Vindinium # :nodoc:
       JSON.parse res.body
     end
   end
+
+  ##
+  # Loops/runs starting with the given game state.
+  def run(game_state)
+
+  end
 end
 
 require 'vindinium/client/map'

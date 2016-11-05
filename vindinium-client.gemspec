@@ -10,5 +10,5 @@ Gem::Specification.new do |spec|
   spec.email    = ['eveith+vindinium@veith-m.de']
   spec.license  = 'GPLv3'
   spec.homepage = 'https://github.com/eveith/vindinium-client'
-  spec.files    = Dir['lib/**/*.rb'] + Dir['test/**/*.rb']
+  spec.files    = Dir['lib/**/*.rb'] + Dir['test/**/*.rb'] + %w(README.md)
 end

@@ -36,4 +36,10 @@ class GameStateTest < MiniTest::Unit::TestCase
     assert hero.is_a? Vindinium::Client::Hero
     assert_equal 4, hero.id
   end
+
+  def test_that_it_does_not_move_when_crashed
+    crashed_state = @finished_game_state.merge({ "hero" => { "crashed" => true }})
+    state = Vindinium::Client::GameState.new 'key', crashed_state
+    assert_raises(RuntimeError) { state.move! :north }
+  end
 end
