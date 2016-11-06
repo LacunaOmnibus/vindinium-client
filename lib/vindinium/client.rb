@@ -20,7 +20,7 @@ module Vindinium # :nodoc:
     #
     #   Client.new(my_key).start_training do |game_state|
     #     # Some thinking...
-    #     game_state.turn! :north
+    #     :north
     #   end
     #
     # There are two optional parameters: +turns+ and +map+. If +turns+ is
@@ -28,22 +28,15 @@ module Vindinium # :nodoc:
     # +:m2+, +:m3+, +:m4+, +:m5+, +:m6+. If no parameter is supplied, a random
     # map is generated.
     #
-    # You *must* use GameState#turn!, or otherwise your bot will not send an
-    # answer and will be makred as +crashed+ after 1 second, after which your
-    # game is essentially over.
+    # Instead of returning a direction, you can also call GameState#move!(dir)
+    # with one of the permitted direction indicators
+    # (+:north+, +:east+, +:south+, +:west+).
     def start_training(turns: 300, map: nil) # :yields: game_state
       params = { turns: turns }
       params[:map] = map if map
 
       game_state = GameState.new @key, api_call(BASE_URI_TRAINING, params)
-
-      if block_given?
-        turn = game_state.turn
-        while game_state.running?
-          direction = yield game_state
-          game_state.move! direction if game_state.turn == turn
-        end
-      end
+      run_game game_state, Proc.new if block_given?
 
       game_state
     end
@@ -60,20 +53,11 @@ module Vindinium # :nodoc:
     # when not enough bots are only to play a match. Just be patient, then;
     # Vindinium::Client certainly is.
     #
-    # You *must* use GameState#turn!, or otherwise your bot will not send an
-    # answer and will be makred as +crashed+ after 1 second, after which your
-    # game is essentially over.
+    # Instead of using GameState#move!(dir), you can also return one of the
+    # permitted direction indicators (+:north+, +:east+, +:south+, +:west+).
     def start_arena_match # :yields: game_state
       game_state = GameState.new @key, api_call(BASE_URI_ARENA)
-
-      if block_given?
-        turn = game_state.turn
-        while game_state.running?
-          direction = yield game_state
-          game_state.move! direction if game_state.turn == turn
-        end
-      end
-
+      run_game game_state, Proc.new if block_given?
       game_state
     end
 
@@ -95,8 +79,17 @@ module Vindinium # :nodoc:
       raise res.body if res.code.to_i >= 400
       JSON.parse res.body
     end
-  end
 
+    private
+
+    def run_game(game_state, block)
+      turn = game_state.turn
+      while game_state.running?
+        direction = block.call game_state
+        game_state.move! direction if game_state.turn == turn
+      end
+    end
+  end
 end
 
 require 'vindinium/client/map'
