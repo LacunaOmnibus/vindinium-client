@@ -32,13 +32,13 @@ class Vindinium::Client::GameState
   ##
   # Current game turn number
   def turn
-    @data['turn'].to_i
+    @data['game']['turn'].to_i
   end
 
   ##
   # Maximum number of turns the game runs
   def max_turns
-    @data['maxTurns'].to_i
+    @data['game']['maxTurns'].to_i
   end
 
   ##

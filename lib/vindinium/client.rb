@@ -36,7 +36,14 @@ module Vindinium # :nodoc:
       params[:map] = map if map
 
       game_state = GameState.new @key, api_call(BASE_URI_TRAINING, params)
-      yield game_state while game_state.running? if block_given?
+
+      if block_given?
+        turn = game_state.turn
+        while game_state.running?
+          direction = yield game_state
+          game_state.move! direction if game_state.turn == turn
+        end
+      end
 
       game_state
     end
@@ -58,7 +65,14 @@ module Vindinium # :nodoc:
     # game is essentially over.
     def start_arena_match # :yields: game_state
       game_state = GameState.new @key, api_call(BASE_URI_ARENA)
-      yield game_state while game_state.running? if block_given?
+
+      if block_given?
+        turn = game_state.turn
+        while game_state.running?
+          direction = yield game_state
+          game_state.move! direction if game_state.turn == turn
+        end
+      end
 
       game_state
     end
@@ -83,11 +97,6 @@ module Vindinium # :nodoc:
     end
   end
 
-  ##
-  # Loops/runs starting with the given game state.
-  def run(game_state)
-
-  end
 end
 
 require 'vindinium/client/map'

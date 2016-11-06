@@ -2,6 +2,8 @@ require 'minitest/autorun'
 
 class GameStateTest < MiniTest::Unit::TestCase
   def setup
+    @initial_game_state = JSON.parse File.read(
+      File.expand_path(__FILE__ + '/../webmock/initial_game_state.json'))
     @finished_game_state = JSON.parse File.read(
       File.expand_path(__FILE__ + '/../webmock/game_state.json'))
   end
@@ -17,10 +19,13 @@ class GameStateTest < MiniTest::Unit::TestCase
       .with(body: "{\"key\":\"key\",\"direction\":\"North\"}")
       .to_return(status: 200, body: @finished_game_state.to_json)
 
-    state = Vindinium::Client::GameState.new('key', @finished_game_state)
+    state = Vindinium::Client::GameState.new 'key', @initial_game_state
+    assert_equal 1, state.turn
+
     state.move! :north
 
     assert_requested(stub_move)
+    assert_equal @finished_game_state['game']['turn'], state.turn
   end
 
   def test_that_it_places_heroes

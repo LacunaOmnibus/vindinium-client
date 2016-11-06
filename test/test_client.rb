@@ -5,9 +5,12 @@ class ClientTest < MiniTest::Unit::TestCase
   def setup
     @faux_game_state = JSON.parse File.read(
       File.expand_path(__FILE__ + '/../webmock/game_state.json'))
+    @faux_game_state['game']['turn'] = 0
     @faux_game_state['game']['finished'] = false
+
     @finished_game_state = JSON.parse File.read(
       File.expand_path(__FILE__ + '/../webmock/game_state.json'))
+
     stub_request(:post, 'http://vindinium.org/api/training')
       .with(body: "{\"key\":\"my_key\"}")
       .to_return( status: 200, body: @faux_game_state.to_json)
@@ -24,8 +27,11 @@ class ClientTest < MiniTest::Unit::TestCase
 
     turns = 0
     client = Vindinium::Client.new('my_key').start_training do |game_state|
+      assert_equal turns, game_state.turn
       assert turns == 0 && game_state.running? || turns > 0 && !game_state.running?
       game_state.move! :north
+      assert_equal @finished_game_state['game']['turn'], game_state.turn
+
       turns += 1
     end
   end
