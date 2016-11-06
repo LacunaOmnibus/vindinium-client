@@ -59,19 +59,12 @@ class Vindinium::Client::GameState
 
     raise "Cannot move: We've crashed!" if @data['hero']['crashed']
 
-    direction = direction.to_s.capitalize
     uri = URI(@data['playUrl'])
-
-    req = Net::HTTP::Post.new uri
-    req.body = { key: @key, direction: direction }.to_json
-    req['User-Agent'] = 'Vindium-Client/Ruby'
-
-    res = Net::HTTP.start(uri.hostname, uri.port,
-                          use_ssl: uri.scheme == 'https') do |http|
-        http.request(req)
-    end
-
+    res = Net::HTTP.post_form(
+      uri,
+      { key: @key, direction: direction.to_s.capitalize })
     raise res.body if res.code.to_i >= 400
+
     @data = JSON.parse res.body
     update!
   end

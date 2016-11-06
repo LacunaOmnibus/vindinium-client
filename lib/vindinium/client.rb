@@ -8,10 +8,12 @@ module Vindinium # :nodoc:
     BASE_URI_ARENA = URI('http://vindinium.org/api/arena')
     BASE_URI_TRAINING = URI('http://vindinium.org/api/training')
 
+    attr_accessor :key
+
     ##
     # Creates a new client by supplying the client's (i.e., the bot's) API
     # key.
-    def initialize(key)
+    def initialize(key = nil)
       @key = key
     end
 
@@ -67,15 +69,8 @@ module Vindinium # :nodoc:
     # Usually, the Client#start_training or Client#start_arena_match methods
     # should be used.
     def api_call(uri, params = {})
-      req = Net::HTTP::Post.new uri
-      req.body = params.merge({ key: @key }).to_json
-      req['User-Agent'] = 'Vindium-Client/Ruby'
-
-      res = Net::HTTP.start(uri.hostname, uri.port,
-                            use_ssl: uri.scheme == 'https') do |http|
-        http.request(req)
-      end
-
+      params.merge!({ key: @key })
+      res = Net::HTTP.post_form(uri, params)
       raise res.body if res.code.to_i >= 400
       JSON.parse res.body
     end

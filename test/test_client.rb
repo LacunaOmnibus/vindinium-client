@@ -12,17 +12,17 @@ class ClientTest < MiniTest::Unit::TestCase
       File.expand_path(__FILE__ + '/../webmock/game_state.json'))
 
     stub_request(:post, 'http://vindinium.org/api/training')
-      .with(body: "{\"key\":\"my_key\"}")
+      .with(body: %q/key=my_key/)
       .to_return( status: 200, body: @faux_game_state.to_json)
     stub_request(:post, 'http://vindinium.org/api/training')
-      .with(body: "{\"turns\":300,\"key\":\"my_key\"}")
+      .with(body: { "key" => "my_key", "turns" => "300" })
       .to_return( status: 200, body: @faux_game_state.to_json)
   end
 
   def test_that_it_loops
     stub_move = stub_request(
         :post, "http://localhost:9000/api/s2xh3aig/lte0/play")
-      .with(body: "{\"key\":\"my_key\",\"direction\":\"North\"}")
+      .with(body: { "key" => "my_key", "direction" => "North" })
       .to_return(status: 200, body: @finished_game_state.to_json)
 
     turns = 0
@@ -45,7 +45,7 @@ class ClientTest < MiniTest::Unit::TestCase
 
   def test_that_it_raises_on_error
     stub_request(:post, 'http://vindinium.org/api/training')
-      .with(body: "{\"key\":\"wrong_key\"}")
+      .with(body: { "key" => "wrong_key" })
       .to_return(status: 400, body: "You supplied the wrong key")
     client = Vindinium::Client.new 'wrong_key'
     assert_raises RuntimeError do
