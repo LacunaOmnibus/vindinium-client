@@ -62,8 +62,8 @@ class Vindinium::Client::GameState
     uri = URI(@data['playUrl'])
     res = Net::HTTP.post_form(
       uri,
-      { key: @key, direction: direction.to_s.capitalize })
-    raise res.body if res.code.to_i >= 400
+      { key: @key, dir: direction.to_s.capitalize })
+    raise "Game server returned an error: #{res.body}" if res.code.to_i >= 400
 
     @data = JSON.parse res.body
     update!

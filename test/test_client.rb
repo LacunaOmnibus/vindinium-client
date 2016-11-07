@@ -15,14 +15,14 @@ class ClientTest < MiniTest::Unit::TestCase
       .with(body: %q/key=my_key/)
       .to_return( status: 200, body: @faux_game_state.to_json)
     stub_request(:post, 'http://vindinium.org/api/training')
-      .with(body: { "key" => "my_key", "turns" => "300" })
+      .with(body: { "key" => "my_key", "turns" => '300' })
       .to_return( status: 200, body: @faux_game_state.to_json)
   end
 
   def test_that_it_loops
     stub_move = stub_request(
         :post, "http://localhost:9000/api/s2xh3aig/lte0/play")
-      .with(body: { "key" => "my_key", "direction" => "North" })
+      .with(body: { "key" => "my_key", "dir" => "North" })
       .to_return(status: 200, body: @finished_game_state.to_json)
 
     turns = 0
@@ -51,5 +51,16 @@ class ClientTest < MiniTest::Unit::TestCase
     assert_raises RuntimeError do
       client.api_call Vindinium::Client::BASE_URI_TRAINING
     end
+  end
+
+  def test_that_it_submits_training_parameters
+    training_request = stub_request(:post, 'http://vindinium.org/api/training')
+      .with(body: { "key"=>"tkey", "map"=>"m1", "turns"=>"2" })
+      .to_return( status: 200, body: @faux_game_state.to_json)
+
+    client = Vindinium::Client.new 'tkey'
+    client.start_training map: 'm1', turns: 2
+
+    assert_requested training_request
   end
 end
