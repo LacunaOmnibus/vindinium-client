@@ -42,6 +42,12 @@ class Vindinium::Client::GameState
   end
 
   ##
+  # Returns the URL where to post moves to
+  def uri
+    URI(@data['playUrl'])
+  end
+
+  ##
   # Returns the hero object that represents us.
   def whoami
     @heroes.find { |h| h.id == @data['hero']['id'] }
@@ -59,7 +65,6 @@ class Vindinium::Client::GameState
 
     raise "Cannot move: We've crashed!" if @data['hero']['crashed']
 
-    uri = URI(@data['playUrl'])
     res = Net::HTTP.post_form(
       uri,
       { key: @key, dir: direction.to_s.capitalize })

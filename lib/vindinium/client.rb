@@ -78,8 +78,8 @@ module Vindinium # :nodoc:
     private
 
     def run_game(game_state, block)
-      turn = game_state.turn
       while game_state.running?
+        turn = game_state.turn
         direction = block.call game_state
         game_state.move! direction if game_state.turn == turn
       end
