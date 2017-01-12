@@ -77,11 +77,11 @@ module Vindinium # :nodoc:
 
     private
 
-    def run_game(game_state, block)
-      while game_state.running?
-        turn = game_state.turn
-        direction = block.call game_state
-        game_state.move! direction if game_state.turn == turn
+    def run_game(game, block)
+      while game.running?
+        turn = game.turn
+        direction = block.call game
+        game.move! direction if game.turn == turn
       end
     end
   end

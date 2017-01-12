@@ -51,21 +51,21 @@ class TestMap < MiniTest::Unit::TestCase
     map = Vindinium::Client::Map.parse @map_string
 
     neighbors = map.neighbors map[0,7]
-    assert_equal nil, neighbors[:north]
+    assert_nil neighbors[:north]
     assert_equal :way, neighbors[:east].type
     assert_equal :way, neighbors[:south].type
     assert_equal :impassable, neighbors[:west].type
 
     neighbors = map.neighbors map[0,0]
-    assert_equal nil, neighbors[:north]
+    assert_nil neighbors[:north]
     assert_equal :impassable, neighbors[:east].type
     assert_equal :impassable, neighbors[:south].type
-    assert_equal nil, neighbors[:west]
+    assert_nil neighbors[:west]
 
     neighbors = map.neighbors map[17,17]
-    assert_equal nil, neighbors[:east]
+    assert_nil neighbors[:east]
     assert_equal :impassable, neighbors[:north].type
     assert_equal :impassable, neighbors[:west].type
-    assert_equal nil, neighbors[:south]
+    assert_nil neighbors[:south]
   end
 end
