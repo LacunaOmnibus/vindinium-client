@@ -1,5 +1,6 @@
 # Lacuna API
 https://github.com/LacunaOmnibus/antaria
+https://github.com/LacunaOmnibus/Vindinium
 
 # Vindinium::Client
 
